@@ -1,0 +1,19 @@
+RUFS - Remote Union File System
+Copyright (c) 2017 Matthias Ladkau
+
+The following components are included in this product:
+
+go-fuse
+https://github.com/hanwen/go-fuse
+Copyright (c) 2010 the Go-FUSE Authors
+Licensed under the MIT License
+
+sys - supplemental Go packages
+https://golang.org/x/sys
+Copyright (c) 2009 The Go Authors
+Licensed under the MIT License
+
+dokan-go
+https://github.com/keybase/dokan-go
+Copyright (c) 2016-2017, Keybase
+Licensed under the BSD3 License

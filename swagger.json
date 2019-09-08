@@ -1,0 +1,620 @@
+{
+   "basePath":"/fs",
+   "definitions":{
+      "Error":{
+         "description":"A human readable error mesage.",
+         "type":"string"
+      }
+   },
+   "host":"localhost:9040",
+   "info":{
+      "description":"Query and control the Remote Union File System.",
+      "title":"RUFS API",
+      "version":"1.0.0"
+   },
+   "paths":{
+      "/about":{
+         "get":{
+            "description":"Returns available API versions, product name and product version.",
+            "produces":[
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"About info object",
+                  "schema":{
+                     "properties":{
+                        "api_versions":{
+                           "description":"List of available API versions.",
+                           "items":{
+                              "description":"Available API version.",
+                              "type":"string"
+                           },
+                           "type":"array"
+                        },
+                        "product":{
+                           "description":"Product name of the REST API provider.",
+                           "type":"string"
+                        },
+                        "version":{
+                           "description":"Version of the REST API provider.",
+                           "type":"string"
+                        }
+                     },
+                     "type":"object"
+                  }
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Return information about the REST API provider."
+         }
+      },
+      "/v1/admin":{
+         "get":{
+            "description":"All current tree configurations; each object has a list of all known branches and the current mapping.",
+            "parameters":[
+               {
+                  "description":"Refresh a particular tree (reload branches and mappings).",
+                  "in":"query",
+                  "name":"refresh",
+                  "required":false,
+                  "type":"string"
+               }
+            ],
+            "produces":[
+               "text/plain",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"A key-value map of tree name to tree configuration"
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Return all current tree configurations."
+         },
+         "post":{
+            "consumes":[
+               "application/json"
+            ],
+            "description":"Create a new named tree.",
+            "parameters":[
+               {
+                  "description":"Name of the new tree.",
+                  "in":"body",
+                  "name":"data",
+                  "required":true,
+                  "schema":{
+                     "type":"string"
+                  }
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns an empty body if successful."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Create a new tree."
+         }
+      },
+      "/v1/admin/{tree}":{
+         "delete":{
+            "description":"Delete a named tree.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns an empty body if successful."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Delete a tree."
+         }
+      },
+      "/v1/admin/{tree}/branch":{
+         "post":{
+            "consumes":[
+               "application/json"
+            ],
+            "description":"Add a new remote branch to the tree.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Definition of the new branch.",
+                  "in":"body",
+                  "name":"data",
+                  "required":true,
+                  "schema":{
+                     "properties":{
+                        "branch":{
+                           "description":"Name of the remote branch (must match on the remote branch).",
+                           "type":"string"
+                        },
+                        "fingerprint":{
+                           "description":"Expected SSL fingerprint of the remote branch (shown during startup) or an empty string.",
+                           "type":"string"
+                        },
+                        "rpc":{
+                           "description":"RPC definition of the remote branch (e.g. localhost:9020).",
+                           "type":"string"
+                        }
+                     },
+                     "type":"object"
+                  }
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns an empty body if successful."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Add a new branch."
+         }
+      },
+      "/v1/admin/{tree}/mapping":{
+         "post":{
+            "consumes":[
+               "application/json"
+            ],
+            "description":"Add a new mapping to the tree.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Definition of the new branch.",
+                  "in":"body",
+                  "name":"data",
+                  "required":true,
+                  "schema":{
+                     "properties":{
+                        "branch":{
+                           "description":"Name of the known remote branch.",
+                           "type":"string"
+                        },
+                        "dir":{
+                           "description":"Tree directory which should hold the branch root.",
+                           "type":"string"
+                        },
+                        "writable":{
+                           "description":"Flag if the branch should be mapped as writable.",
+                           "type":"string"
+                        }
+                     },
+                     "type":"object"
+                  }
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns an empty body if successful."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Add a new mapping."
+         }
+      },
+      "/v1/dir/{tree}/{path}":{
+         "get":{
+            "description":"List the contents of a directory.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Directory path.",
+                  "in":"path",
+                  "name":"path",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Add listings of subdirectories.",
+                  "in":"query",
+                  "name":"recursive",
+                  "required":false,
+                  "type":"boolean"
+               },
+               {
+                  "description":"Include file checksums.",
+                  "in":"query",
+                  "name":"checksums",
+                  "required":false,
+                  "type":"boolean"
+               }
+            ],
+            "produces":[
+               "text/plain",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns a map of directories with a list of files as values."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Read a directory."
+         }
+      },
+      "/v1/file/{tree}/{path}":{
+         "delete":{
+            "description":"Delete a file or directory.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"File or directory path.",
+                  "in":"path",
+                  "name":"path",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"List of (full path) files which should be deleted",
+                  "in":"body",
+                  "name":"filelist",
+                  "required":false,
+                  "schema":{
+                     "items":{
+                        "description":"File (with full path) which should be deleted.",
+                        "type":"string"
+                     },
+                     "type":"array"
+                  }
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns the content of the requested file."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Delete a file or directory."
+         },
+         "get":{
+            "description":"Return the contents of a file.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"File path.",
+                  "in":"path",
+                  "name":"path",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "produces":[
+               "text/plain",
+               "application/octet-stream"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns the content of the requested file."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Read a file."
+         },
+         "post":{
+            "consumes":[
+               "multipart/form-data"
+            ],
+            "description":"Upload or overwrite a file.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"File path.",
+                  "in":"path",
+                  "name":"path",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Page to redirect to after processing the request.",
+                  "in":"formData",
+                  "name":"redirect",
+                  "required":false,
+                  "type":"string"
+               },
+               {
+                  "description":"File(s) to create / overwrite.",
+                  "in":"formData",
+                  "name":"uploadfile",
+                  "required":true,
+                  "type":"file"
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Successful upload no redirect parameter given."
+               },
+               "302":{
+                  "description":"Successful upload - redirect according to the given redirect parameter."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Upload a file."
+         },
+         "put":{
+            "consumes":[
+               "application/json"
+            ],
+            "description":"Perform a file operation like rename or copy.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"File path.",
+                  "in":"path",
+                  "name":"path",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Operation which should be executes",
+                  "in":"body",
+                  "name":"operation",
+                  "required":true,
+                  "schema":{
+                     "properties":{
+                        "action":{
+                           "description":"Action to perform.",
+                           "enum":[
+                              "rename",
+                              "mkdir",
+                              "copy",
+                              "sync"
+                           ],
+                           "type":"string"
+                        },
+                        "destination":{
+                           "description":"Destination directory when copying files.",
+                           "type":"string"
+                        },
+                        "files":{
+                           "description":"List of (full path) files which should be copied / renamed.",
+                           "items":{
+                              "description":"File (with full path) which should be copied / renamed.",
+                              "type":"string"
+                           },
+                           "type":"array"
+                        },
+                        "newname":{
+                           "description":"New filename when renaming a single file.",
+                           "type":"string"
+                        },
+                        "newnames":{
+                           "description":"List of new file names when renaming multiple files using the files parameter.",
+                           "items":{
+                              "description":"New filename.",
+                              "type":"string"
+                           },
+                           "type":"array"
+                        }
+                     },
+                     "type":"object"
+                  }
+               }
+            ],
+            "produces":[
+               "text/plain",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns the content of the requested file."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Perform a file operation."
+         }
+      },
+      "/v1/progress/{tree}/{progress_id}":{
+         "get":{
+            "description":"Return a progress object showing the progress of an ongoing operation.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"Id of progress object.",
+                  "in":"path",
+                  "name":"progress_id",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "produces":[
+               "text/plain",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns the requested progress object."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Request progress update."
+         }
+      },
+      "/v1/zip/{tree}":{
+         "post":{
+            "consumes":[
+               "application/x-www-form-urlencoded"
+            ],
+            "description":"Combine a list of given files into a single zip file.",
+            "parameters":[
+               {
+                  "description":"Name of the tree.",
+                  "in":"path",
+                  "name":"tree",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "description":"JSON encoded list of (full path) files which should be zipped up",
+                  "in":"body",
+                  "name":"files",
+                  "required":true,
+                  "schema":{
+                     "items":{
+                        "description":"File (with full path) which should be included in the zip file.",
+                        "type":"string"
+                     },
+                     "type":"array"
+                  }
+               }
+            ],
+            "produces":[
+               "text/plain"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Returns the content of the requested file."
+               },
+               "default":{
+                  "description":"Error response",
+                  "schema":{
+                     "$ref":"#/definitions/Error"
+                  }
+               }
+            },
+            "summary":"Create zip file from a list of files."
+         }
+      }
+   },
+   "produces":[
+      "application/json"
+   ],
+   "schemes":[
+      "https"
+   ],
+   "swagger":"2.0"
+}

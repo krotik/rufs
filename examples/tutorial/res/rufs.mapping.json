@@ -1,0 +1,16 @@
+{
+  "branches": [
+    {
+      "branch": "local",
+      "fingerprint": "",
+      "rpc": ":9020"
+    }
+  ],
+  "tree": [
+    {
+      "branch": "local",
+      "path": "/",
+      "writeable": true
+    }
+  ]
+}
